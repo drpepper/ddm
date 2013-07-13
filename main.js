@@ -1,5 +1,5 @@
 var GENOME_LENGHT = 10;
-var GENE_WIDTH = 40; 
+var GENE_WIDTH = 20; 
 var GENE_COLOR = {
   "A": "#f00",
   "D": "#0f0",
@@ -77,12 +77,12 @@ function drawSequence(layer, sequence, x, y) {
   for(var i in sequence)
   {
     var circle = new Kinetic.Circle({
-        x: x + 1.5 * i * GENE_WIDTH,
+        x: x + 0.75 * i * GENE_WIDTH,
         y: y,
         radius: GENE_WIDTH / 2,
         fill: GENE_COLOR[sequence[i]],
         stroke: 'black',
-        strokeWidth: 4
+        strokeWidth: 2
       });
 
     circles.add(circle);
