@@ -1,58 +1,99 @@
 var GENOME_LENGHT = 10;
 var GENE_WIDTH = 40; 
+var GENE_COLOR = {
+  "A": "#f00",
+  "D": "#0f0",
+  "R": "#00f"
+};
 
 $(document).ready(function() {
-  var paper = new Raphael("game", 900, 600);
+   var stage = new Kinetic.Stage({
+      container: 'game',
+      width: 900,
+      height: 600
+    });
 
-    var m1 = genMonster();
-    var m2 = genMonster();
+  var layer = new Kinetic.Layer();
 
-    var result = fight(m1, m2);
+  var m1 = genMonster();
+  var m2 = genMonster();
 
+  var result = fight(m1, m2);
 
-    console.log(m1.name);
-    console.log(m2.name);
+  console.log(m1.name);
+  console.log(m2.name);
 
-    console.log(result);
+  console.log(result);
 
-    console.log(m1.score);    
-    console.log(m2.score);
+  console.log(m1.score);    
+  console.log(m2.score);
 
   var genomes = [
       m1.gene,
       m2.gene
   ];
+    
+  var playerName = new Kinetic.Text({ 
+    x: 20,
+    y: 100,
+    text: "Player",
+    fontSize: 30,
+    fontFamily: 'Calibri',
+    fill: 'green'
+  });
+  /*var playerPoints = Kinetic.Text({ 
+    x: 20, 
+    y: 110, 
+    text: String(13)
+  });
 
-  
-
-  var playerName = paper.text(20, 100, "Player");
-  var playerPoints = paper.text(20, 110, String(13));
-
-  var enemyName = paper.text(20, 150, "Enemy");
-  var enemyPoints = paper.text(20, 160, String(11));
+  var enemyName = Kinetic.Text({ 
+    x: 20, 
+    y: 150, 
+    text: "Enemy"
+  });
+  var enemyPoints = Kinetic.Text({ 
+    x: 20, 
+    y: 160, 
+    text: String(11)
+  });*/
 
   var sequences = [
-    drawSequence(paper, genomes[0], 70, 100),
-    drawSequence(paper, genomes[1], 70, 150)
+    drawSequence(layer, genomes[0], 70, 100), //.draggable.enable(), // drag(dragStart, dragMove),
+    drawSequence(layer, genomes[1], 70, 150) // .draggable.enable() // drag(dragStart, dragMove)
   ];
 
-  sequences[0][0].animate({ "r": GENE_WIDTH * 1.2 }, 500);
+  // sequences[0][0].animate({ "r": GENE_WIDTH * 1.2 }, 500);
+
+  stage.add(layer);
+
 });
 
 
-function drawSequence(paper, sequence, x, y) {
-  var circles = []
+function drawSequence(layer, sequence, x, y) {
+  var circles = new Kinetic.Group({
+    draggable: true
+  });
   for(var i in sequence)
   {
-    var circle = paper.circle(x + 1.5 * i * GENE_WIDTH, y, GENE_WIDTH / 2);
-    switch(sequence[i]) {
-      case "A": circle.attr("fill", "#f00"); break;
-      case "D": circle.attr("fill", "#0f0"); break;
-      case "R": circle.attr("fill", "#00f"); break;
-    }
-    circle.attr("stroke", "#000");
+    var circle = new Kinetic.Circle({
+        x: x + 1.5 * i * GENE_WIDTH,
+        y: y,
+        radius: GENE_WIDTH / 2,
+        fill: GENE_COLOR[sequence[i]],
+        stroke: 'black',
+        strokeWidth: 4
+      });
 
-    circles.push(circle);
+    circles.add(circle);
+
+    circles.on('mouseover', function() {
+        document.body.style.cursor = 'pointer';
+      });
+    circles.on('mouseout', function() {
+      document.body.style.cursor = 'default';
+    });
   }
+  layer.add(circles);
   return circles;
 }
