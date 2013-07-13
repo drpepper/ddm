@@ -1,4 +1,5 @@
 var LIFE_POINTS = 3;
+var GENOME_LENGHT = 10;
 
 
 // Left and right are player structures, like { defense: 5, attack: 4, reproduction: 9 }
@@ -28,9 +29,35 @@ function battle(left, right) {
   return { winner: winner, history: history };
 }
 
-// Returns an object representing fitness, like { attack: 3, defense: 4, reproduction: 7 }
-function fitness(championGenes) {
+// takes two gene codes and produces a clone
+function cross(left, right) {
+  var players = { left: left, right : right };
+  var newPlayer = [];
+  for(var i in left)
+  {
+    var giver = Math.random() > 0.5 ? "left" : "right";
+    newPlayer.push(players[giver][i]);
+  }
+  return newPlayer;
+}
 
+
+// Returns a list like [ {"attack": 3 }, { "defense": 2 }, ... ]
+function findGroups(genome) {
+  var groups = [];
+  var currentGroup = {};
+  for(var i in genome)
+  {
+    if(!currentGroup) { 
+      currentGroup = {};
+      currentGroup[genome[i]] = 1;
+    }
+    else if(currentGroup[genome[i]]) {
+      c
+    }
+
+
+  }
 }
 
 function complement(leftOrRight) { return leftOrRight === "left" ? "right" : "left" }
