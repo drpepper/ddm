@@ -4,10 +4,26 @@ var GENE_WIDTH = 40;
 $(document).ready(function() {
   var paper = new Raphael("game", 900, 600);
 
+    var m1 = genMonster();
+    var m2 = genMonster();
+
+    var result = fight(m1, m2);
+
+
+    console.log(m1.name);
+    console.log(m2.name);
+
+    console.log(result);
+
+    console.log(m1.score);    
+    console.log(m2.score);
+
   var genomes = [
-    ["A", "R", "D", "R", "D", "A", "R", "D", "R", "D"],
-    ["R", "D", "A", "A", "D", "R", "D", "A", "A", "D"],
+      m1.gene,
+      m2.gene
   ];
+
+  
 
   var playerName = paper.text(20, 100, "Player");
   var playerPoints = paper.text(20, 110, String(13));
