@@ -7,41 +7,52 @@ var R = 'R'; // Reproduction
 var geneLst = [ A, D, R ]
 
 function genMonster() {
+  var gene = [];
+  for(var i = 0; i < gene_size; i++) {
+    var g = Math.floor(Math.random()*geneLst.length);
+    gene.push(geneLst[g]);
+  }
+  return makeMonster(gene);
+}
+
+function makeMonster(gene) {
     var monster = { attack:[], defense:[], reproduction: 0 };
 
-    var gene = [];
-    for(var i = 0; i < gene_size; i++) {
-	var g = Math.floor(Math.random()*geneLst.length);
-	gene.push(geneLst[g]);
-    }
     monster.gene = gene;
     monster.name = gene.join('');
 
     var lastAttack = 0;
     var lastDefense = 0;
     gene.forEach(function(e) {
-	if (e == A) {
-	    if (lastAttack == 0) {
-		monster.attack.push(0);
-	    }
-	    lastAttack += 1;
-	    monster.attack[monster.attack.length-1] = lastAttack;
-	    lastDefense = 0;
-	} else if (e == D) {
-	    if (lastDefense == 0) {
-		monster.defense.push(0);
-	    }
-	    lastDefense += 1;
-	    monster.defense[monster.defense.length-1] = lastDefense;
-	    lastAttack = 0;
-	} else if (e == R) {
-	    lastAttack = 0;
-	    lastDefense = 0;
-	    monster.reproduction += 1;
-	}
+  if (e == A) {
+      if (lastAttack == 0) {
+    monster.attack.push(0);
+      }
+      lastAttack += 1;
+      monster.attack[monster.attack.length-1] = lastAttack;
+      lastDefense = 0;
+  } else if (e == D) {
+      if (lastDefense == 0) {
+    monster.defense.push(0);
+      }
+      lastDefense += 1;
+      monster.defense[monster.defense.length-1] = lastDefense;
+      lastAttack = 0;
+  } else if (e == R) {
+      lastAttack = 0;
+      lastDefense = 0;
+      monster.reproduction += 1;
+  }
     });
+  return monster;
+}
 
-    return monster;
+function cross(m1, m2) {
+  var crossPoint = Math.random() * m1
+  for(var i in m1)
+  {
+
+  }
 }
 
 function fight(m1, m2) {
