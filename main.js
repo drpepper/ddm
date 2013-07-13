@@ -121,6 +121,13 @@ function drawSequence(layer, monster, x, y) {
         console.log(fightList[0].score);    
         console.log(fightList[1].score);
 
+        if(fightList[0].score > fightList[1].score) {
+          fightList[1].circles.remove();
+        } else if(fightList[0].score < fightList[1].score) {
+          fightList[0].circles.remove();
+        }
+        layer.draw();
+
         fightList = [];
       }
     } else if(circles.getX() > stage.getWidth() - 200) {
@@ -147,3 +154,24 @@ function drawSequence(layer, monster, x, y) {
 }
 
 function interpolate(a, b, p) { return a + (b - a) * p; }
+
+function fadeOut(obj) {
+  var anim = new Kinetic.Animation(function(frame) {
+    var time = frame.time,
+      timeDiff = frame.timeDiff,
+      frameRate = frame.frameRate;
+    // update stuff
+
+    if(frame.time >= 1000) {
+      obj.setOpacity(0);
+      anim.stop();
+    }
+    else {
+      obj.setOpacity(1 - frame.time / 1000);
+    }
+    console.log("opacity", obj.getOpacity());
+  }, obj);
+
+  anim.start();
+  console.log("start");
+}
