@@ -6,61 +6,63 @@ var GENE_COLOR = {
   "R": "#00f"
 };
 
+var fightList = [];
+
 $(document).ready(function() {
-   var stage = new Kinetic.Stage({
-      container: 'game',
-      width: 900,
-      height: 600
-    });
+ var stage = new Kinetic.Stage({
+    container: 'game',
+    width: 900,
+    height: 600
+  });
 
   var layer = new Kinetic.Layer();
 
   var m1 = genMonster();
   var m2 = genMonster();
 
-  var result = fight(m1, m2);
-
-  console.log(m1.name);
-  console.log(m2.name);
-
-  console.log(result);
-
-  console.log(m1.score);    
-  console.log(m2.score);
-
-  var genomes = [
-      m1.gene,
-      m2.gene
-  ];
-    
-  var playerName = new Kinetic.Text({ 
-    x: 20,
-    y: 100,
-    text: "Player",
+  layer.add(new Kinetic.Text({ 
+    x: 0,
+    y: 00,
+    text: "MATCH",
     fontSize: 30,
     fontFamily: 'Calibri',
-    fill: 'green'
-  });
-  /*var playerPoints = Kinetic.Text({ 
-    x: 20, 
-    y: 110, 
-    text: String(13)
-  });
+    fill: 'black'
+  }));
 
-  var enemyName = Kinetic.Text({ 
-    x: 20, 
-    y: 150, 
-    text: "Enemy"
-  });
-  var enemyPoints = Kinetic.Text({ 
-    x: 20, 
-    y: 160, 
-    text: String(11)
-  });*/
+  layer.add(new Kinetic.Text({ 
+    x: stage.getWidth() - 100,
+    y: 0,
+    text: "MATE",
+    fontSize: 30,
+    fontFamily: 'Calibri',
+    fill: 'black'
+  }));
+
+  layer.add(new Kinetic.Rect({
+    x: 0,
+    y: 0,
+    width: 200,
+    height: stage.getHeight(),
+    fill: 'black',
+    stroke: 'black',
+    strokeWidth: 2,
+    opacity: 0.2
+  }));
+
+  layer.add(new Kinetic.Rect({
+    x: stage.getWidth() - 200,
+    y: 0,
+    width: 200,
+    height: stage.getHeight(),
+    fill: 'black',
+    stroke: 'black',
+    strokeWidth: 2,
+    opacity: 0.2
+  }));
 
   var sequences = [
-    drawSequence(layer, genomes[0], 70, 100), //.draggable.enable(), // drag(dragStart, dragMove),
-    drawSequence(layer, genomes[1], 70, 150) // .draggable.enable() // drag(dragStart, dragMove)
+    drawSequence(layer, m1, 300, 100), //.draggable.enable(), // drag(dragStart, dragMove),
+    drawSequence(layer, m2, 500, 100) // .draggable.enable() // drag(dragStart, dragMove)
   ];
 
   // sequences[0][0].animate({ "r": GENE_WIDTH * 1.2 }, 500);
@@ -70,30 +72,51 @@ $(document).ready(function() {
 });
 
 
-function drawSequence(layer, sequence, x, y) {
+function drawSequence(layer, monster, x, y) {
   var circles = new Kinetic.Group({
+    x: x,
+    y: y,
     draggable: true
   });
-  for(var i in sequence)
+  for(var i in monster.gene)
   {
     var circle = new Kinetic.Circle({
-        x: x + 0.75 * i * GENE_WIDTH,
-        y: y,
-        radius: GENE_WIDTH / 2,
-        fill: GENE_COLOR[sequence[i]],
-        stroke: 'black',
-        strokeWidth: 2
-      });
-
-    circles.add(circle);
-
-    circles.on('mouseover', function() {
-        document.body.style.cursor = 'pointer';
-      });
-    circles.on('mouseout', function() {
-      document.body.style.cursor = 'default';
+      x: 0,
+      y: 0.75 * i * GENE_WIDTH,
+      radius: GENE_WIDTH / 2,
+      fill: GENE_COLOR[monster.gene[i]],
+      stroke: 'black',
+      strokeWidth: 2
     });
+    circles.add(circle);
   }
+
+  circles.on('mouseover', function() {
+      document.body.style.cursor = 'pointer';
+    });
+  circles.on('mouseout', function() {
+    document.body.style.cursor = 'default';
+  });
+
+  circles.on('dragend', function() {
+    console.log("dragend", circles.getX() + layer.getX(), circles.getY() + layer.getY());
+    if(circles.getX() < 200) {
+      fightList.push(monster)
+      console.log("fightList", fightList); 
+    }
+    if(fightList.length == 2) {
+      var result = fight(fightList[0], fightList[1]);
+
+      console.log(fightList[0].name);
+      console.log(fightList[1].name);
+
+      console.log(result);
+
+      console.log(fightList[0].score);    
+      console.log(fightList[1].score);
+    }
+  });
+
   layer.add(circles);
   return circles;
 }
