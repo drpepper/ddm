@@ -1,4 +1,4 @@
-var LIFE_POINTS = 5;
+var LIFE_POINTS = 3;
 
 
 // Left and right are player structures, like { defense: 5, attack: 4, reproduction: 9 }
@@ -20,7 +20,7 @@ function battle(left, right) {
       round.winner = complement(attacker);
     }
 
-    history.push(rounds);
+    history.push(round);
 
     attacker = complement(attacker);
   }
