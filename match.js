@@ -48,11 +48,15 @@ function makeMonster(gene) {
 }
 
 function cross(m1, m2) {
-  var crossPoint = Math.random() * m1
-  for(var i in m1)
+  var crossPoint = Math.random() * m1.gene.length;
+  var crossA = [], crossB = [];
+  for(var i in m1.gene)
   {
-
+    crossA.push(i < crossPoint ? m1.gene[i] : m2.gene[i]);
+    crossB.push(i < crossPoint ? m2.gene[i] : m1.gene[i]);
   }
+
+  return [makeMonster(crossA), makeMonster(crossB)];
 }
 
 function fight(m1, m2) {

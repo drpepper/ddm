@@ -7,9 +7,12 @@ var GENE_COLOR = {
 };
 
 var fightList = [];
+var mateList = [];
+
+var stage = {};
 
 $(document).ready(function() {
- var stage = new Kinetic.Stage({
+  stage = new Kinetic.Stage({
     container: 'game',
     width: 900,
     height: 600
@@ -91,6 +94,9 @@ function drawSequence(layer, monster, x, y) {
     circles.add(circle);
   }
 
+  circles.monster = monster;
+  monster.circles = circles;
+
   circles.on('mouseover', function() {
       document.body.style.cursor = 'pointer';
     });
@@ -103,20 +109,41 @@ function drawSequence(layer, monster, x, y) {
     if(circles.getX() < 200) {
       fightList.push(monster)
       console.log("fightList", fightList); 
-    }
-    if(fightList.length == 2) {
-      var result = fight(fightList[0], fightList[1]);
 
-      console.log(fightList[0].name);
-      console.log(fightList[1].name);
+      if(fightList.length == 2) {
+        var result = fight(fightList[0], fightList[1]);
 
-      console.log(result);
+        console.log(fightList[0].name);
+        console.log(fightList[1].name);
 
-      console.log(fightList[0].score);    
-      console.log(fightList[1].score);
+        console.log(result);
+
+        console.log(fightList[0].score);    
+        console.log(fightList[1].score);
+
+        fightList = [];
+      }
+    } else if(circles.getX() > stage.getWidth() - 200) {
+      mateList.push(monster)
+      console.log("mateList", mateList); 
+
+      if(mateList.length == 2) {
+        var crosses = cross(mateList[0], mateList[1]);
+
+        console.log(crosses[0].name);
+        console.log(crosses[1].name);
+
+        drawSequence(layer, crosses[0], interpolate(mateList[0].circles.getX(), mateList[1].circles.getX(), 0.33), 100);
+        drawSequence(layer, crosses[1], interpolate(mateList[0].circles.getX(), mateList[1].circles.getX(), 0.66), 100);
+        layer.draw();
+
+        mateList = [];
+      }
     }
   });
 
   layer.add(circles);
   return circles;
 }
+
+function interpolate(a, b, p) { return a + (b - a) * p; }
