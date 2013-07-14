@@ -2,8 +2,12 @@ body {
 
 }
 
-#game {
+#main {
     margin: 0 auto;
     width: 900px;
     margin-top: 50px;
+}
+
+#main a {
+    float: right;
 }
