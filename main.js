@@ -137,13 +137,24 @@ function drawSequence(layer, monster, x, y) {
         console.log(fightList[0].score);
         console.log(fightList[1].score);
 
+        var toRemove = null; 
         if(fightList[0].score > fightList[1].score) {
-          monsterList = _.without(monsterList, fightList[1]);
-          fightList[1].circles.remove();
+          toRemove = fightList[1];
         } else if(fightList[0].score < fightList[1].score) {
-          monsterList = _.without(monsterList, fightList[0]);
-          fightList[0].circles.remove();
+          toRemove = fightList[0];
         }
+
+        if(toRemove != null) {
+          monsterList = _.without(monsterList, toRemove);
+
+          new Kinetic.Tween({
+            node: toRemove.circles, 
+            duration: 0.25,
+            opacity: 0,
+            onFinish: function() { toRemove.circles.remove(); }
+          }).play();
+        }
+
         snapMonsters();
       }
     } else if(circles.getX() > stage.getWidth() - 200) {
