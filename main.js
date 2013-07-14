@@ -6,6 +6,7 @@ var GENE_COLOR = {
   "R": "#00f"
 };
 
+var monsterList = [];
 var fightList = [];
 var mateList = [];
 
@@ -63,19 +64,13 @@ $(document).ready(function() {
     opacity: 0.2
   }));
 
-    var sequences = [];
-    //drawSequence(layer, m1, 300, 100), //.draggable.enable(), // drag(dragStart, dragMove),
-    //drawSequence(layer, m2, 500, 100) // .draggable.enable() // drag(dragStart, dragMove)
-  //];
+  var sequences = [];
 
-    for(var i = 0; i < 10; i++) {
-	sequences.push(drawSequence(layer, genMonster(), 250+(i*45), 100));
-    }
-    
-  // sequences[0][0].animate({ "r": GENE_WIDTH * 1.2 }, 500);
-
+  for(var i = 0; i < 10; i++) {
+    sequences.push(drawSequence(layer, genMonster(), 250+(i*45), 100));
+  }
+  
   stage.add(layer);
-
 });
 
 
@@ -108,6 +103,8 @@ function drawSequence(layer, monster, x, y) {
 
   circles.monster = monster;
   monster.circles = circles;
+  monsterList.push(monster);
+  layer.add(circles);
 
   circles.on('mouseover', function() {
       document.body.style.cursor = 'pointer';
@@ -118,13 +115,9 @@ function drawSequence(layer, monster, x, y) {
 
   circles.on('dragend', function() {
     console.log("dragend", circles.getX() + layer.getX(), circles.getY() + layer.getY());
+    updateMonsterLists();
+
     if(circles.getX() < 200) {
-
-	if (mateList.indexOf(monster) !== -1) {
-	    mateList.splice(fightList.indexOf(monster), 1);
-	}
-
-      fightList.push(monster)
       console.log("fightList", fightList); 
 
       if(fightList.length == 2) {
@@ -135,29 +128,20 @@ function drawSequence(layer, monster, x, y) {
 
         console.log(result);
 
-        console.log(fightList[0].score);    
+        console.log(fightList[0].score);
         console.log(fightList[1].score);
 
         if(fightList[0].score > fightList[1].score) {
+          monsterList = _.without(monsterList, fightList[1]);
           fightList[1].circles.remove();
-          fightList = [ fightList[0] ];
         } else if(fightList[0].score < fightList[1].score) {
+          monsterList = _.without(monsterList, fightList[0]);
           fightList[0].circles.remove();
-          fightList = [ fightList[1] ];
         }
+        updateMonsterLists();
         layer.draw();
-
-
       }
     } else if(circles.getX() > stage.getWidth() - 200) {
-
-	if (fightList.indexOf(monster) !== -1) {
-	    fightList.splice(fightList.indexOf(monster), 1);
-	}
-
-      mateList.push(monster)
-      console.log("mateList", mateList); 
-
       if(mateList.length == 2) {
         var crosses = cross(mateList[0], mateList[1]);
 
@@ -167,47 +151,23 @@ function drawSequence(layer, monster, x, y) {
         drawSequence(layer, crosses[0], interpolate(mateList[0].circles.getX(), mateList[1].circles.getX(), 0.33), 100);
         drawSequence(layer, crosses[1], interpolate(mateList[0].circles.getX(), mateList[1].circles.getX(), 0.66), 100);
         layer.draw();
-
-        mateList = [];
       }
-    } else {
-
-	if (mateList.indexOf(monster) !== -1) {
-	    console.log("removing monster fron mateList");
-	    mateList.splice(fightList.indexOf(monster), 1);
-	}
-
-	if (fightList.indexOf(monster) !== -1) {
-	    console.log("removing monster fron fightList");
-	    fightList.splice(fightList.indexOf(monster), 1);
-	}
-	console.log(fightList, mateList);
     }
   });
 
-  layer.add(circles);
   return circles;
 }
 
 function interpolate(a, b, p) { return a + (b - a) * p; }
 
-function fadeOut(obj) {
-  var anim = new Kinetic.Animation(function(frame) {
-    var time = frame.time,
-      timeDiff = frame.timeDiff,
-      frameRate = frame.frameRate;
-    // update stuff
-
-    if(frame.time >= 1000) {
-      obj.setOpacity(0);
-      anim.stop();
+function updateMonsterLists() { 
+  fightList = [];
+  mateList = [];
+  for(i in monsterList) {
+    if(monsterList[i].circles.getX() < 200) {
+      fightList.push(monsterList[i]);
+    } else if(monsterList[i].circles.getX() > stage.getWidth() - 200) {
+      mateList.push(monsterList[i]);
     }
-    else {
-      obj.setOpacity(1 - frame.time / 1000);
-    }
-    console.log("opacity", obj.getOpacity());
-  }, obj);
-
-  anim.start();
-  console.log("start");
+  }
 }
