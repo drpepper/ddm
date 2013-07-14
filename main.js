@@ -144,7 +144,7 @@ function drawSequence(layer, monster, x, y, addToList) {
       });
       
       var anim = new Kinetic.Animation(function(frame) {
-          circle.setX(10 * Math.sin((circle.getY()/10) + frame.time/1000));
+          circle.setX(10 * Math.sin((circle.getY()/10) + (monster.seed*(frame.time/1000))));
       }, layer);
       anim.start();
       circles.add(circle);
