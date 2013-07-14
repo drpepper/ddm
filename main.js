@@ -5,7 +5,7 @@ var GENE_COLOR = {
   "D": "rgba(40, 209, 250, 1)",
   "R": "rgba(249, 213, 8, 1)"
 };
-var FADE_TIME = 100;
+var FADE_TIME = 50;
 
 var images = {};
 
@@ -351,10 +351,7 @@ function drawSequence(layer, monster, x, y, addToList) {
 			  node: toRemove.circles, 
 			  duration: 0.25,
 			  opacity: 0,
-			  onFinish: function() { toRemove.circles.remove(); 
-          music.fight.fadeOut(FADE_TIME, function() { music.fight.stop(); });
-          music.main.fadeIn(FADE_TIME).play();
-          }
+			  onFinish: function() { toRemove.circles.remove(); }
 		      }).play();
 		  }
 
@@ -364,6 +361,9 @@ function drawSequence(layer, monster, x, y, addToList) {
         won.circles.get("Text")[0].setOpacity(1);
       }
 		  
+      music.fight.fadeOut(FADE_TIME, function() { music.fight.stop(); });
+      music.main.fadeIn(FADE_TIME).play();
+
 		  snapMonsters();
 		 
 	      });
