@@ -165,13 +165,15 @@ function drawSequence(layer, monster, x, y) {
     } else {
 
 	if (mateList.indexOf(monster) !== -1) {
+	    console.log("removing monster fron mateList");
 	    mateList.splice(fightList.indexOf(monster), 1);
 	}
 
 	if (fightList.indexOf(monster) !== -1) {
+	    console.log("removing monster fron fightList");
 	    fightList.splice(fightList.indexOf(monster), 1);
 	}
-
+	console.log(fightList, mateList);
     }
   });
 
