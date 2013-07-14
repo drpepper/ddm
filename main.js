@@ -216,57 +216,57 @@ function drawSequence(layer, monster, x, y, addToList) {
 	  fightLayer.add(score2Txt);
 	  fightLayer.draw();
 
-	  var attackSprite = new Kinetic.Image({
-	      x: -250,
-	      y: 250,
-	      image: images["images/Attack.png"],
-	      width: 1, //10*action.attackV,
-	      height: 1, //10*action.attackV
-	  });
-	  fightLayer.add(attackSprite);
+	      var attackSprite = new Kinetic.Image({
+		  x: -250,
+		  y: 150+fightY,
+		  image: images["images/Attack.png"],
+		  width: 1, //10*action.attackV,
+		  height: 1, //10*action.attackV
+	      });
+	      fightLayer.add(attackSprite);
+	      
+	      var defenseSprite = new Kinetic.Image({
+		  x: -250,
+		  y: 150+fightY,
+		  image: images["images/Defense.png"],
+		  width: 1, //10*action.attackV,
+		  height: 1, //10*action.attackV
+	      });
+	      fightLayer.add(defenseSprite);
 
-	  var defenseSprite = new Kinetic.Image({
-	      x: -250,
-	      y: 250,
-	      image: images["images/Defense.png"],
-	      width: 1, //10*action.attackV,
-	      height: 1, //10*action.attackV
-	  });
-	  fightLayer.add(defenseSprite);
 
-	  var fightY = 35;
+
+	  var fightY = 0;
 	  function nextAction(cb) {
 	      action = result.shift();
 	      if (action === undefined) {
 		  console.log("fight finished");
 		  console.log(fightList[0].score);
 		  console.log(fightList[1].score);
-		  cb();
+		  setTimeout(cb, 1000);
 		  return;
 	      }
 
-	      var attackX = 0;
 	      attackSprite.setWidth(20 + (20*action.attackV));
 	      attackSprite.setHeight(20 + (20*action.attackV));
 	      
 	      if (action.attacker == fightList[0].name) {
 		  attackSprite.setX(250 - (attackSprite.getWidth()/2));
-		  attackSprite.setY(250 - (attackSprite.getWidth()/2));
+		  attackSprite.setY(175+fightY - (attackSprite.getWidth()/2));
 	      } else {
 		  attackSprite.setX(stage.getWidth()-(250 + (attackSprite.getWidth()/2)));
-		  attackSprite.setY(250 - (attackSprite.getWidth()/2));
+		  attackSprite.setY(175+fightY - (attackSprite.getWidth()/2));
 	      }
 
-	      var defenseY = 0;
 	      defenseSprite.setWidth(20 + (20*action.defenseV));
 	      defenseSprite.setHeight(20 + (20*action.defenseV));
 	      
 	      if (action.defender == fightList[0].name) {
 		  defenseSprite.setX(250 - (defenseSprite.getWidth()/2));
-		  defenseSprite.setY(250 - (defenseSprite.getWidth()/2));
+		  defenseSprite.setY(175+fightY - (defenseSprite.getWidth()/2));
 	      } else {
 		  defenseSprite.setX(stage.getWidth()-(250 + (defenseSprite.getWidth()/2)));
-		  defenseSprite.setY(250 - (defenseSprite.getWidth()/2));
+		  defenseSprite.setY(175+fightY - (defenseSprite.getWidth()/2));
 	      }
 
 	      /*
@@ -284,16 +284,38 @@ function drawSequence(layer, monster, x, y, addToList) {
 	      if (action.winner == fightList[0].name) {
 		  score1++;
 		  score1Txt.setText(""+score1);
+		  
+		  fightLayer.add(new Kinetic.Text({ 
+		      x: 350,
+		      y: 175+fightY,
+		      text: "+1",
+		      fontSize: 15,
+		      fontFamily: 'Calibri',
+		      fill: 'black'
+		  }));
+		  
+		  
 	      } else if (action.winner == fightList[1].name) {
 		  score2++;
 		  score2Txt.setText(""+score2);
+		  
+		  fightLayer.add(new Kinetic.Text({ 
+		      x: stage.getWidth()-350,
+		      y: 175+fightY,
+		      text: "+1",
+		      fontSize: 15,
+		      fontFamily: 'Calibri',
+		      fill: 'black'
+		  }));
+
 	      }
 	      
 	      fightLayer.draw();
-	      fightY += 15;
+	      fightY += 25;
+	      console.log(fightY);
 	      setTimeout(function(){
 		  nextAction(cb);
-	      }, 500);
+	      }, 250);
 	  }
 	  
 	  setTimeout(function() {
