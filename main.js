@@ -11,6 +11,7 @@ var fightList = [];
 var mateList = [];
 
 var stage = {};
+var layer;
 
 $(document).ready(function() {
   stage = new Kinetic.Stage({
@@ -19,7 +20,7 @@ $(document).ready(function() {
     height: 600
   });
 
-  var layer = new Kinetic.Layer();
+  layer = new Kinetic.Layer();
 
   var m1 = genMonster();
   var m2 = genMonster();
@@ -107,7 +108,7 @@ function drawSequence(layer, monster, x, y) {
 
   circles.on('dragend', function() {
     console.log("dragend", circles.getX() + layer.getX(), circles.getY() + layer.getY());
-    updateMonsterLists();
+    snapMonsters();
 
     if(circles.getX() < 200) {
       console.log("fightList", fightList); 
@@ -130,8 +131,7 @@ function drawSequence(layer, monster, x, y) {
           monsterList = _.without(monsterList, fightList[0]);
           fightList[0].circles.remove();
         }
-        updateMonsterLists();
-        layer.draw();
+        snapMonsters();
       }
     } else if(circles.getX() > stage.getWidth() - 200) {
       if(mateList.length == 2) {
@@ -142,7 +142,7 @@ function drawSequence(layer, monster, x, y) {
 
         drawSequence(layer, crosses[0], interpolate(mateList[0].circles.getX(), mateList[1].circles.getX(), 0.33), 100);
         drawSequence(layer, crosses[1], interpolate(mateList[0].circles.getX(), mateList[1].circles.getX(), 0.66), 100);
-        layer.draw();
+        snapMonsters();
       }
     }
   });
@@ -155,11 +155,27 @@ function interpolate(a, b, p) { return a + (b - a) * p; }
 function updateMonsterLists() { 
   fightList = [];
   mateList = [];
-  for(i in monsterList) {
+  for(var i in monsterList) {
     if(monsterList[i].circles.getX() < 200) {
       fightList.push(monsterList[i]);
     } else if(monsterList[i].circles.getX() > stage.getWidth() - 200) {
       mateList.push(monsterList[i]);
     }
   }
+}
+
+function snapMonsters() {
+  updateMonsterLists();
+  snapList(fightList, 0, 200);
+  snapList(mateList, stage.getWidth() - 200, stage.getWidth());
+  snapList(_.difference(monsterList, fightList, mateList), 200, stage.getWidth() - 200);
+}
+
+function snapList(list, xMin, xMax) {
+  var sorted = _.sortBy(list, function(monster) { return monster.circles.getX(); });
+  for(var i = 0; i < sorted.length; i++) {
+    list[i].circles.setY(100);
+    list[i].circles.setX(interpolate(xMin, xMax, (i + 1) / (sorted.length + 1)));
+  }
+  layer.draw();
 }
