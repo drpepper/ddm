@@ -86,17 +86,25 @@ function drawSequence(layer, monster, x, y) {
     draggable: true
   });
   for(var i in monster.gene)
-  {
-    var circle = new Kinetic.Circle({
-      x: 0,
-      y: 0.75 * i * GENE_WIDTH,
-      radius: GENE_WIDTH / 2,
-      fill: GENE_COLOR[monster.gene[i]],
-      stroke: 'black',
-      strokeWidth: 2
-    });
-    circles.add(circle);
-  }
+    {
+	function createCircle() {
+	    var circle = new Kinetic.Circle({
+		x: 0, 
+		y: 0.75 * i * GENE_WIDTH,
+		radius: GENE_WIDTH / 2,
+		fill: GENE_COLOR[monster.gene[i]],
+		stroke: 'black',
+		strokeWidth: 2
+	    });
+	    
+	    var anim = new Kinetic.Animation(function(frame) {
+		circle.setX(10 * Math.sin((circle.getY()/10) + frame.time/1000));
+	    }, layer);
+	    anim.start();
+	    circles.add(circle);
+	};
+	createCircle();
+    }
 
   circles.monster = monster;
   monster.circles = circles;
