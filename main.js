@@ -119,12 +119,23 @@ function drawSequence(layer, monster, x, y, addToList) {
     y: y,
     draggable: true
   });
+
+  circles.add(new Kinetic.Text({
+    x: 0,
+    y: 0,
+    text: "0",
+    align: "center",
+    fontSize: 20,
+    fontFamily: 'Calibri',
+    fill: 'black'
+  }));
+
   for(var i in monster.gene)
     {
   function createCircle() {
       var circle = new Kinetic.Circle({
     x: 0, 
-    y: 0.75 * i * GENE_WIDTH,
+    y: 40 + 0.75 * i * GENE_WIDTH,
     radius: GENE_WIDTH / 2,
     fill: GENE_COLOR[monster.gene[i]],
     stroke: 'black',
@@ -169,7 +180,7 @@ function drawSequence(layer, monster, x, y, addToList) {
 	      x: 100,
 	      y: 100,
 	      width: stage.getWidth()-200,
-	      height: stage.getHeight()-200,
+	      height: stage.getHeight()-100,
 	      fill: 'white',
 	      stroke: 'black',
 	      strokeWidth: 2,
@@ -313,9 +324,12 @@ function drawSequence(layer, monster, x, y, addToList) {
 		  stage.draw();
 
 		  var toRemove = null; 
+      var won = null;
 		  if(fightList[0].score > fightList[1].score) {
+          won = fightList[0];
 		      toRemove = fightList[1];
 		  } else if(fightList[0].score < fightList[1].score) {
+          won = fightList[1];
 		      toRemove = fightList[0];
 		  }
 		  
@@ -329,6 +343,11 @@ function drawSequence(layer, monster, x, y, addToList) {
 			  onFinish: function() { toRemove.circles.remove(); }
 		      }).play();
 		  }
+
+      if(won != null) {
+        won.fightsWon++;
+        won.circles.get("Text")[0].setText(won.fightsWon);
+      }
 		  
 		  snapMonsters();
 		 

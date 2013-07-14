@@ -20,6 +20,7 @@ function makeMonster(gene) {
 
     monster.gene = gene;
     monster.name = gene.join('');
+    monster.fightsWon = 0;
 
     var lastAttack = 0;
     var lastDefense = 0;
