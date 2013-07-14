@@ -119,6 +119,17 @@ function drawSequence(layer, monster, x, y, addToList) {
     y: y,
     draggable: true
   });
+
+  circles.add(new Kinetic.Text({
+    x: 0,
+    y: -40,
+    text: "0",
+    align: "center",
+    fontSize: 20,
+    fontFamily: 'Calibri',
+    fill: 'black'
+  }));
+
   for(var i in monster.gene)
     {
   function createCircle() {
