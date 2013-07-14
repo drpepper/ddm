@@ -1,9 +1,9 @@
 var GENOME_LENGHT = 10;
 var GENE_WIDTH = 20; 
 var GENE_COLOR = {
-  "A": "#f00",
-  "D": "#0f0",
-  "R": "#00f"
+  "A": "rgba(251, 100, 2, 1)",
+  "D": "rgba(40, 209, 250, 1)",
+  "R": "rgba(249, 213, 8, 1)"
 };
 
 var images = {};
