@@ -5,6 +5,7 @@ var GENE_COLOR = {
   "D": "rgba(40, 209, 250, 1)",
   "R": "rgba(249, 213, 8, 1)"
 };
+var FADE_TIME = 100;
 
 var images = {};
 
@@ -16,8 +17,12 @@ var stage = {};
 var layer;
 var sounds = {
   mate: [],
-  fight: []
+  fight: [],
 }; 
+var music = {
+  main: null,
+  fight: null
+};
 
 function loadImage(lst, cb) {
     var src = lst.shift();
@@ -176,6 +181,9 @@ function drawSequence(layer, monster, x, y, addToList) {
       console.log("fightList", fightList); 
 
       if(fightList.length == 2) {
+        music.main.stop();
+        music.fight.setVolume(100).play();
+
     	  var fightLayer = new Kinetic.Layer();
     	  fightLayer.add(new Kinetic.Rect({
 	      x: 100,
@@ -341,7 +349,10 @@ function drawSequence(layer, monster, x, y, addToList) {
 			  node: toRemove.circles, 
 			  duration: 0.25,
 			  opacity: 0,
-			  onFinish: function() { toRemove.circles.remove(); }
+			  onFinish: function() { toRemove.circles.remove(); 
+          music.fight.fadeOut(FADE_TIME, function() { music.fight.stop(); });
+          music.main.fadeIn(FADE_TIME).play();
+          }
 		      }).play();
 		  }
 
@@ -418,6 +429,9 @@ function loadSounds() {
   loadSoundIntoList(sounds.mate, "sounds/mate/16443.ogg");
   loadSoundIntoList(sounds.fight, "sounds/fight/13883.ogg");
   loadSoundIntoList(sounds.fight, "sounds/fight/21305.ogg");
+
+  music.main = new buzz.sound("sounds/172561__djgriffin__video-game-7.ogg", { preload: true, loop: true, autoplay: true });
+  music.fight = new buzz.sound("sounds/8-Bit Ninjas - Demos - 03 - Fight in a Bus Stop.ogg", { preload: true, loop: true });
 }
 
 function loadSoundIntoList(list, url)
