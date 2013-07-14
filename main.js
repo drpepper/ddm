@@ -126,25 +126,72 @@ function drawSequence(layer, monster, x, y) {
       console.log("fightList", fightList); 
 
       if(fightList.length == 2) {
-        var result = fight(fightList[0], fightList[1]);
+	  var fightLayer = new Kinetic.Layer();
+	  fightLayer.add(new Kinetic.Rect({
+	      x: 100,
+	      y: 100,
+	      width: stage.getWidth()-200,
+	      height: stage.getHeight()-200,
+	      fill: 'white',
+	      stroke: 'black',
+	      strokeWidth: 2,
+	      opacity: 1.0
+	  }));
+	  stage.add(fightLayer);
 
-        console.log(fightList[0].name);
-        console.log(fightList[1].name);
+          var result = fight(fightList[0], fightList[1]);
 
-        console.log(result);
+	  /*
+          console.log(fightList[0].name);
+          console.log(fightList[1].name);
+	  
+          console.log(result);
+	  
+          console.log(fightList[0].score);
+          console.log(fightList[1].score);
+	  */
+	  var fightY = 35;
+	  function nextAction(cb) {
+	      action = result.shift();
+	      if (action === undefined) {
+		  console.log("fight finished");
+		  cb();
+		  return;
+	      }
+	      var text = action.attacker+" attacks "+action.defender; 
+	      console.log(text);
+	      fightLayer.add(new Kinetic.Text({ 
+		  x: 100+20,
+		  y: 100+fightY,
+		  text: text,
+		  fontSize: 10,
+		  fontFamily: 'Calibri',
+		  fill: 'black'
+	      }));
+	      fightLayer.draw();
+	      fightY += 15;
+	      setTimeout(function(){
+		  nextAction(cb);
+	      }, 250);
+	  }
+	  
+	  setTimeout(function() {
+	      nextAction(function() {
+		  console.log("I'm here!");
+		  if(fightList[0].score > fightList[1].score) {
+		      monsterList = _.without(monsterList, fightList[1]);
+		      fightList[1].circles.remove();
+		  } else if(fightList[0].score < fightList[1].score) {
+		      monsterList = _.without(monsterList, fightList[0]);
+		      fightList[0].circles.remove();
+		  }
+		  fightLayer.remove();
+		  updateMonsterLists();
+		  layer.draw();
+		  stage.draw();
+	      });
+	  }, 1000);	  
 
-        console.log(fightList[0].score);
-        console.log(fightList[1].score);
-
-        if(fightList[0].score > fightList[1].score) {
-          monsterList = _.without(monsterList, fightList[1]);
-          fightList[1].circles.remove();
-        } else if(fightList[0].score < fightList[1].score) {
-          monsterList = _.without(monsterList, fightList[0]);
-          fightList[0].circles.remove();
-        }
-        updateMonsterLists();
-        layer.draw();
       }
     } else if(circles.getX() > stage.getWidth() - 200) {
       if(mateList.length == 2) {
