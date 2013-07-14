@@ -71,6 +71,7 @@ $(document).ready(function() {
     sequences.push(drawSequence(layer, genMonster(), 250+(i*45), 100));
   }
     
+    /* global anim no more 
   var anim = new Kinetic.Animation(function(frame) {
     monsterList.forEach(function(m) {
       m.circles.getChildren().forEach(function(circle) {
@@ -79,12 +80,12 @@ $(document).ready(function() {
     });
   }, layer);
   anim.start();
-  
+  */
   stage.add(layer);
 });
 
 
-function drawSequence(layer, monster, x, y) {
+function drawSequence(layer, monster, x, y, addToList) {
   var circles = new Kinetic.Group({
     x: x,
     y: y,
@@ -102,14 +103,22 @@ function drawSequence(layer, monster, x, y) {
     strokeWidth: 2
       });
       
+      var anim = new Kinetic.Animation(function(frame) {
+          circle.setX(10 * Math.sin((circle.getY()/10) + frame.time/1000));
+      }, layer);
+      anim.start();
       circles.add(circle);
   };
   createCircle();
     }
 
-  circles.monster = monster;
-  monster.circles = circles;
-  monsterList.push(monster);
+    if (addToList !== false) {
+	circles.monster = monster;
+	monster.circles = circles;
+	monsterList.push(monster);
+    } else {
+	console.log("not adding circles to monster list...");
+    }
   layer.add(circles);
 
   circles.on('mouseover', function() {
@@ -142,20 +151,20 @@ function drawSequence(layer, monster, x, y) {
 
           var result = fight(fightList[0], fightList[1]);
 
-	  /*
-          console.log(fightList[0].name);
-          console.log(fightList[1].name);
-	  
-          console.log(result);
-	  
-          console.log(fightList[0].score);
-          console.log(fightList[1].score);
-	  */
+	  fightLayer.add(drawSequence(fightLayer, JSON.parse(JSON.stringify(fightList[0])), 
+				      150, 150, false));
+	  fightLayer.add(drawSequence(fightLayer, JSON.parse(JSON.stringify(fightList[1])), 
+				      stage.getWidth()-150, 150, false));
+
+	  fightLayer.draw();
+
 	  var fightY = 35;
 	  function nextAction(cb) {
 	      action = result.shift();
 	      if (action === undefined) {
 		  console.log("fight finished");
+		  console.log(fightList[0].score);
+		  console.log(fightList[1].score);
 		  cb();
 		  return;
 	      }
@@ -179,7 +188,6 @@ function drawSequence(layer, monster, x, y) {
 	  setTimeout(function() {
 	      nextAction(function() {
 		  console.log("I'm here!");
-
 		  fightLayer.remove();
 		  stage.draw();
 
