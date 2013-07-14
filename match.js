@@ -18,7 +18,7 @@ function genMonster() {
 function makeMonster(gene) {
     var monster = { attack:[], defense:[], reproduction: 0 };
 
-    monster.seed = 1 + Math.random()*4;
+    monster.seed = 0.5 + Math.random()*2;
 
     monster.gene = gene;
     monster.name = gene.join('');

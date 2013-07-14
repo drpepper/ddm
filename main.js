@@ -157,6 +157,7 @@ function drawSequence(layer, monster, x, y, addToList) {
 	monster.circles = circles;
 	monsterList.push(monster);
     } else {
+	monster.seed *= 3;
 	console.log("not adding circles to monster list...");
     }
   layer.add(circles);
@@ -195,6 +196,7 @@ function drawSequence(layer, monster, x, y, addToList) {
 				      150, 175, false));
 	  fightLayer.add(drawSequence(fightLayer, JSON.parse(JSON.stringify(fightList[1])), 
 				      stage.getWidth()-150, 175, false));
+
 	  var score1 = 0;
 	  var score1Txt = new Kinetic.Text({ 
 	      x: 150,
