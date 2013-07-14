@@ -269,7 +269,11 @@ function playRandomSoundInList(list) {
 }
 
 function loadSounds() {
-  loadSoundIntoList(sounds.mate, "sounds/mate/16440.mp3");
+  loadSoundIntoList(sounds.mate, "sounds/mate/16440.ogg");
+  loadSoundIntoList(sounds.mate, "sounds/mate/16442.ogg");
+  loadSoundIntoList(sounds.mate, "sounds/mate/16443.ogg");
+  loadSoundIntoList(sounds.fight, "sounds/fight/13883.ogg");
+  loadSoundIntoList(sounds.fight, "sounds/fight/21305.ogg");
 }
 
 function loadSoundIntoList(list, url)
