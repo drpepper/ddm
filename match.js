@@ -4,13 +4,13 @@ var A = 'A'; // Attack
 var D = 'D'; // Defense
 var R = 'R'; // Reproduction
 
-var geneLst = [ A, D, R ]
+var geneList = [ A, D, R ]
 
 function genMonster() {
   var gene = [];
   for(var i = 0; i < gene_size; i++) {
-    var g = Math.floor(Math.random()*geneLst.length);
-    gene.push(geneLst[g]);
+    var g = Math.floor(Math.random()*geneList.length);
+    gene.push(geneList[g]);
   }
   return makeMonster(gene);
 }
@@ -56,7 +56,19 @@ function cross(m1, m2) {
     crossB.push(i < crossPoint ? m2.gene[i] : m1.gene[i]);
   }
 
+  crossA = mutate(crossA);
+  crossB = mutate(crossB);
+
   return [makeMonster(crossA), makeMonster(crossB)];
+}
+
+function mutate(genes) {
+  var pos = Math.floor(Math.random() * genes.length);
+  var oldGeneIndex = geneList.indexOf(genes[pos]);
+  var mixFactor = Math.floor(Math.random() * 2) + 1;
+  var newGeneIndex = (oldGeneIndex + mixFactor) % geneList.length;
+  genes[pos] = geneList[newGeneIndex];
+  return genes;
 }
 
 function fight(m1, m2) {
@@ -113,45 +125,4 @@ function fight(m1, m2) {
     //console.log(m2.name + " : "+m2.score);
     
     return results;
-}
-
-function displayMonster(ctx, m) {
-    ctx.save();
-    ctx.scale(50, 50);
-
-    ctx.fillStyle = "#000";
-
-    ctx.beginPath();
-    ctx.arc(0,0,1,0,2*Math.PI);
-    ctx.fill();
-
-    for(var i = 0; i < m.attack; i++) {
-	var r = Math.random() * 360;
-	ctx.save();
-	ctx.rotate(r);
-	ctx.translate(1, 0);
-	ctx.scale(0.25, 0.25);
-	ctx.beginPath();
-	ctx.moveTo(1, 0);
-	ctx.lineTo(-0.5, 1);
-	ctx.lineTo(-0.5, -1);
-	ctx.lineTo(0.5, 0);
-	ctx.closePath();
-	ctx.fill();
-	ctx.restore();
-    }
-
-    for(var i = 0; i < m.defense; i++) {
-	var r = Math.random() * 360;
-	ctx.save();
-	ctx.rotate(r);
-	ctx.translate(1, 0);
-	ctx.scale(0.25, 0.25);
-	ctx.beginPath();
-	ctx.arc(0,0,1,0,2*Math.PI);
-	ctx.fill();
-	ctx.restore();
-    }
-
-    ctx.restore();
 }
