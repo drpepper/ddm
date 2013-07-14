@@ -373,11 +373,31 @@ function runFight() {
   function nextAction(cb) {
       action = result.shift();
       if (action === undefined) {
-    console.log("fight finished");
-    console.log(fightList[0].score);
-    console.log(fightList[1].score);
-    setTimeout(cb, 1000);
-    return;
+	  console.log("fight finished");
+	  console.log(fightList[0].score);
+	  console.log(fightList[1].score);
+
+	  var X;
+	  var txt = "Wins!";
+	  if (fightList[0].score > fightList[1].score) {
+	      X = 150;
+	  } else if (fightList[0].score < fightList[1].score) {
+	      X = stage.getWidth()-250;
+	  } else {
+	      X = (stage.getWidth()/2)-100;
+	      txt = "Draw!";
+	  }
+	  fightLayer.add(new Kinetic.Text({ 
+              x: X,
+              y: 200,
+              text: txt,
+              fontSize: 100,
+              fontFamily: 'Helvetica',
+              fill: 'black'
+	  }));	  
+	  fightLayer.draw();
+	  setTimeout(cb, 1000);
+	  return;
       }
 
       attackSprite.setWidth(20 + (20*action.attackV));
