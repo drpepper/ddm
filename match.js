@@ -63,7 +63,9 @@ function fight(m1, m2) {
     var lst;
     m1.score = 0;
     m2.score = 0;
-    lst = [m1, m2];
+    lst = [ { monster:m1, attack:m1.attack.slice(0), defense:m1.defense.slice(0) }, 
+	    { monster:m2, attack:m2.attack.slice(0), defense:m2.defense.slice(0) } ]
+	    
     
     //console.log(m1.name);
     //console.log(m2.name);
@@ -89,17 +91,19 @@ function fight(m1, m2) {
 	}
 	//console.log(a1+" -> "+d1);
 	if (a1 > d1) {
-	    lst[0].score += 1;
+	    lst[0].monster.score += 1;
 	    //console.log(lst[0].name + " attacks and win: +1 point");
-	    results.push({attacker: lst[0].name, defender: lst[1].name, winner:lst[0].name});
+	    results.push({attacker: lst[0].monster.name, defender: lst[1].monster.name, 
+			  winner:lst[0].monster.name});
 	} else if (a1 < d1) {
-	    lst[1].score += 1;
+	    lst[1].monster.score += 1;
 	    //console.log(lst[0].name + " attacks and loose, +1 point to opponant");
-	    results.push({attacker: lst[0].name, defender: lst[1].name, winner:lst[1].name});
+	    results.push({attacker: lst[0].monster.name, defender: lst[1].monster.name, 
+			  winner:lst[1].monster.name});
 	    //console.log(lst[0].gene + " attacks and is esquived, 0");
 	} else {
 	    //console.log(lst[0].name + " attacks and is esquived, 0");
-	    results.push({attacker: lst[0].name, defender: lst[1].name});
+	    results.push({attacker: lst[0].monster.name, defender: lst[1].monster.name});
 	}
 
 	lst = [ lst[1], lst[0] ];
@@ -107,7 +111,7 @@ function fight(m1, m2) {
 	
     //console.log(m1.name + " : "+m1.score);
     //console.log(m2.name + " : "+m2.score);
-
+    
     return results;
 }
 

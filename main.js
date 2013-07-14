@@ -26,7 +26,7 @@ $(document).ready(function() {
   layer.add(new Kinetic.Text({ 
     x: 0,
     y: 00,
-    text: "MATCH",
+    text: "FIGHT",
     fontSize: 30,
     fontFamily: 'Calibri',
     fill: 'black'
@@ -63,11 +63,15 @@ $(document).ready(function() {
     opacity: 0.2
   }));
 
-  var sequences = [
-    drawSequence(layer, m1, 300, 100), //.draggable.enable(), // drag(dragStart, dragMove),
-    drawSequence(layer, m2, 500, 100) // .draggable.enable() // drag(dragStart, dragMove)
-  ];
+    var sequences = [];
+    //drawSequence(layer, m1, 300, 100), //.draggable.enable(), // drag(dragStart, dragMove),
+    //drawSequence(layer, m2, 500, 100) // .draggable.enable() // drag(dragStart, dragMove)
+  //];
 
+    for(var i = 0; i < 10; i++) {
+	sequences.push(drawSequence(layer, genMonster(), 250+(i*45), 100));
+    }
+    
   // sequences[0][0].animate({ "r": GENE_WIDTH * 1.2 }, 500);
 
   stage.add(layer);
@@ -107,6 +111,11 @@ function drawSequence(layer, monster, x, y) {
   circles.on('dragend', function() {
     console.log("dragend", circles.getX() + layer.getX(), circles.getY() + layer.getY());
     if(circles.getX() < 200) {
+
+	if (mateList.indexOf(monster) !== -1) {
+	    mateList.splice(fightList.indexOf(monster), 1);
+	}
+
       fightList.push(monster)
       console.log("fightList", fightList); 
 
@@ -123,14 +132,21 @@ function drawSequence(layer, monster, x, y) {
 
         if(fightList[0].score > fightList[1].score) {
           fightList[1].circles.remove();
+          fightList = [ fightList[0] ];
         } else if(fightList[0].score < fightList[1].score) {
           fightList[0].circles.remove();
+          fightList = [ fightList[1] ];
         }
         layer.draw();
 
-        fightList = [];
+
       }
     } else if(circles.getX() > stage.getWidth() - 200) {
+
+	if (fightList.indexOf(monster) !== -1) {
+	    fightList.splice(fightList.indexOf(monster), 1);
+	}
+
       mateList.push(monster)
       console.log("mateList", mateList); 
 
@@ -146,6 +162,16 @@ function drawSequence(layer, monster, x, y) {
 
         mateList = [];
       }
+    } else {
+
+	if (mateList.indexOf(monster) !== -1) {
+	    mateList.splice(fightList.indexOf(monster), 1);
+	}
+
+	if (fightList.indexOf(monster) !== -1) {
+	    fightList.splice(fightList.indexOf(monster), 1);
+	}
+
     }
   });
 
