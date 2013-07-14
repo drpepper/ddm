@@ -216,6 +216,24 @@ function drawSequence(layer, monster, x, y, addToList) {
 	  fightLayer.add(score2Txt);
 	  fightLayer.draw();
 
+	  var attackSprite = new Kinetic.Image({
+	      x: -250,
+	      y: 250,
+	      image: images["images/Attack.png"],
+	      width: 1, //10*action.attackV,
+	      height: 1, //10*action.attackV
+	  });
+	  fightLayer.add(attackSprite);
+
+	  var defenseSprite = new Kinetic.Image({
+	      x: -250,
+	      y: 250,
+	      image: images["images/Defense.png"],
+	      width: 1, //10*action.attackV,
+	      height: 1, //10*action.attackV
+	  });
+	  fightLayer.add(defenseSprite);
+
 	  var fightY = 35;
 	  function nextAction(cb) {
 	      action = result.shift();
@@ -226,6 +244,32 @@ function drawSequence(layer, monster, x, y, addToList) {
 		  cb();
 		  return;
 	      }
+
+	      var attackX = 0;
+	      attackSprite.setWidth(20 + (20*action.attackV));
+	      attackSprite.setHeight(20 + (20*action.attackV));
+	      
+	      if (action.attacker == fightList[0].name) {
+		  attackSprite.setX(250 - (attackSprite.getWidth()/2));
+		  attackSprite.setY(250 - (attackSprite.getWidth()/2));
+	      } else {
+		  attackSprite.setX(stage.getWidth()-(250 + (attackSprite.getWidth()/2)));
+		  attackSprite.setY(250 - (attackSprite.getWidth()/2));
+	      }
+
+	      var defenseY = 0;
+	      defenseSprite.setWidth(20 + (20*action.defenseV));
+	      defenseSprite.setHeight(20 + (20*action.defenseV));
+	      
+	      if (action.defender == fightList[0].name) {
+		  defenseSprite.setX(250 - (defenseSprite.getWidth()/2));
+		  defenseSprite.setY(250 - (defenseSprite.getWidth()/2));
+	      } else {
+		  defenseSprite.setX(stage.getWidth()-(250 + (defenseSprite.getWidth()/2)));
+		  defenseSprite.setY(250 - (defenseSprite.getWidth()/2));
+	      }
+
+	      /*
 	      var text = action.attacker+" attacks "+action.defender; 
 	      console.log(text);
 	      fightLayer.add(new Kinetic.Text({ 
@@ -236,7 +280,7 @@ function drawSequence(layer, monster, x, y, addToList) {
 		  fontFamily: 'Calibri',
 		  fill: 'black'
 	      }));
-
+	      */
 	      if (action.winner == fightList[0].name) {
 		  score1++;
 		  score1Txt.setText(""+score1);
@@ -249,7 +293,7 @@ function drawSequence(layer, monster, x, y, addToList) {
 	      fightY += 15;
 	      setTimeout(function(){
 		  nextAction(cb);
-	      }, 250);
+	      }, 500);
 	  }
 	  
 	  setTimeout(function() {

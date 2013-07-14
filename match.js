@@ -107,16 +107,17 @@ function fight(m1, m2) {
 	    lst[0].monster.score += 1;
 	    //console.log(lst[0].name + " attacks and win: +1 point");
 	    results.push({attacker: lst[0].monster.name, defender: lst[1].monster.name, 
-			  winner:lst[0].monster.name});
+			  winner:lst[0].monster.name, attackV: a1, defenseV: d1});
 	} else if (a1 < d1) {
 	    lst[1].monster.score += 1;
 	    //console.log(lst[0].name + " attacks and loose, +1 point to opponant");
 	    results.push({attacker: lst[0].monster.name, defender: lst[1].monster.name, 
-			  winner:lst[1].monster.name});
+			  winner:lst[1].monster.name, attackV: a1, defenseV: d1});
 	    //console.log(lst[0].gene + " attacks and is esquived, 0");
 	} else {
 	    //console.log(lst[0].name + " attacks and is esquived, 0");
-	    results.push({attacker: lst[0].monster.name, defender: lst[1].monster.name});
+	    results.push({attacker: lst[0].monster.name, defender: lst[1].monster.name,
+			 attackV: a1, defenseV: d1});
 	}
 
 	lst = [ lst[1], lst[0] ];
