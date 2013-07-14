@@ -69,6 +69,15 @@ $(document).ready(function() {
   for(var i = 0; i < 10; i++) {
     sequences.push(drawSequence(layer, genMonster(), 250+(i*45), 100));
   }
+    
+    var anim = new Kinetic.Animation(function(frame) {
+	monsterList.forEach(function(m) {
+	    m.circles.getChildren().forEach(function(circle) {
+		circle.setX(10 * Math.sin((circle.getY()/10) + frame.time/1000));
+	    });
+	});
+    }, layer);
+    anim.start();
   
   stage.add(layer);
 });
@@ -92,10 +101,6 @@ function drawSequence(layer, monster, x, y) {
 		strokeWidth: 2
 	    });
 	    
-	    var anim = new Kinetic.Animation(function(frame) {
-		circle.setX(10 * Math.sin((circle.getY()/10) + frame.time/1000));
-	    }, layer);
-	    anim.start();
 	    circles.add(circle);
 	};
 	createCircle();
@@ -148,8 +153,8 @@ function drawSequence(layer, monster, x, y) {
         console.log(crosses[0].name);
         console.log(crosses[1].name);
 
-        drawSequence(layer, crosses[0], interpolate(mateList[0].circles.getX(), mateList[1].circles.getX(), 0.33), 100);
-        drawSequence(layer, crosses[1], interpolate(mateList[0].circles.getX(), mateList[1].circles.getX(), 0.66), 100);
+          drawSequence(layer, crosses[0], interpolate(mateList[0].circles.getX(), mateList[1].circles.getX(), 0.33), interpolate(mateList[0].circles.getY(), mateList[1].circles.getY(), 0.33));
+        drawSequence(layer, crosses[1], interpolate(mateList[0].circles.getX(), mateList[1].circles.getX(), 0.66), interpolate(mateList[0].circles.getY(), mateList[1].circles.getY(), 0.66));
         layer.draw();
       }
     }
