@@ -54,20 +54,20 @@ $(document).ready(function() {
   var m2 = genMonster();
 
   layer.add(new Kinetic.Text({ 
-    x: 0,
-    y: 00,
+    x: 50,
+    y: 0,
     text: "FIGHT",
     fontSize: 30,
-    fontFamily: 'Calibri',
+    fontFamily: 'Helvetica',
     fill: 'black'
   }));
 
   layer.add(new Kinetic.Text({ 
-    x: stage.getWidth() - 100,
+    x: stage.getWidth() - 140,
     y: 0,
     text: "MATE",
     fontSize: 30,
-    fontFamily: 'Calibri',
+    fontFamily: 'Helvetica',
     fill: 'black'
   }));
 
@@ -126,8 +126,9 @@ function drawSequence(layer, monster, x, y, addToList) {
     text: "0",
     align: "center",
     fontSize: 20,
-    fontFamily: 'Calibri',
-    fill: 'black'
+    fontFamily: 'Helvetica',
+    fill: 'black',
+    opacity: 0
   }));
 
   for(var i in monster.gene)
@@ -200,7 +201,7 @@ function drawSequence(layer, monster, x, y, addToList) {
 	      y: 525,
 	      text: "0",
 	      fontSize: 30,
-	      fontFamily: 'Calibri',
+	      fontFamily: 'Helvetica',
 	      fill: 'black'
 	  });
 	  var score2 = 0;
@@ -209,7 +210,7 @@ function drawSequence(layer, monster, x, y, addToList) {
 	      y: 525,
 	      text: "0",
 	      fontSize: 30,
-	      fontFamily: 'Calibri',
+	      fontFamily: 'Helvetica',
 	      fill: 'black'
 	  });
 	  fightLayer.add(score1Txt);
@@ -277,7 +278,7 @@ function drawSequence(layer, monster, x, y, addToList) {
 		  y: 150+fightY,
 		  text: text,
 		  fontSize: 10,
-		  fontFamily: 'Calibri',
+		  fontFamily: 'Helvetica',
 		  fill: 'black'
 	      }));
 	      */
@@ -290,7 +291,7 @@ function drawSequence(layer, monster, x, y, addToList) {
 		      y: 175+fightY,
 		      text: "+1",
 		      fontSize: 15,
-		      fontFamily: 'Calibri',
+		      fontFamily: 'Helvetica',
 		      fill: 'black'
 		  }));
 		  
@@ -304,7 +305,7 @@ function drawSequence(layer, monster, x, y, addToList) {
 		      y: 175+fightY,
 		      text: "+1",
 		      fontSize: 15,
-		      fontFamily: 'Calibri',
+		      fontFamily: 'Helvetica',
 		      fill: 'black'
 		  }));
 
@@ -347,6 +348,7 @@ function drawSequence(layer, monster, x, y, addToList) {
       if(won != null) {
         won.fightsWon++;
         won.circles.get("Text")[0].setText(won.fightsWon);
+        won.circles.get("Text")[0].setOpacity(1);
       }
 		  
 		  snapMonsters();
