@@ -439,3 +439,22 @@ function loadSoundIntoList(list, url)
   list.push(new buzz.sound(url, { preload: true }));  
 }
 
+function makeButton(x, y, color, text, callback) {
+  var button = new Kinetic.Layer();
+
+  var rect = new Kinetic.Rect({
+    x: x,
+    y: y,
+    width: 100,
+    height: 50,
+    cornerRadius: 5,
+    fill: 'green',
+    stroke: 'black',
+    strokeWidth: 4
+  });
+  button.add(rect);
+
+  button.on('click', callback);
+  return button;
+}
+
