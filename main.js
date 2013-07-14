@@ -6,6 +6,8 @@ var GENE_COLOR = {
   "R": "#00f"
 };
 
+var images = {};
+
 var monsterList = [];
 var fightList = [];
 var mateList = [];
@@ -13,7 +15,29 @@ var mateList = [];
 var stage = {};
 var layer;
 
+function loadImage(lst, cb) {
+    var src = lst.shift();
+    if (src === undefined) {
+	cb();
+	return;
+    }
+    var img = new Image();
+    img.onload = function() {
+	console.log(src+" loaded");
+	images[src] = img;
+	loadImage(lst, cb);
+    };
+    img.src = src;
+}
+
 $(document).ready(function() {
+    var spriteList = [ "images/Attack.png", "images/Defense.png", "images/Reproduction.png"];
+    loadImage(spriteList, function() {
+	console.log("all images loaded");
+    });
+    
+
+
   stage = new Kinetic.Stage({
     container: 'game',
     width: 900,
@@ -152,10 +176,29 @@ function drawSequence(layer, monster, x, y, addToList) {
           var result = fight(fightList[0], fightList[1]);
 
 	  fightLayer.add(drawSequence(fightLayer, JSON.parse(JSON.stringify(fightList[0])), 
-				      150, 150, false));
+				      150, 175, false));
 	  fightLayer.add(drawSequence(fightLayer, JSON.parse(JSON.stringify(fightList[1])), 
-				      stage.getWidth()-150, 150, false));
-
+				      stage.getWidth()-150, 175, false));
+	  var score1 = 0;
+	  var score1Txt = new Kinetic.Text({ 
+	      x: 150,
+	      y: 125,
+	      text: "0",
+	      fontSize: 30,
+	      fontFamily: 'Calibri',
+	      fill: 'black'
+	  });
+	  var score2 = 0;
+	  var score2Txt = new Kinetic.Text({ 
+	      x: stage.getWidth()-150,
+	      y: 125,
+	      text: "0",
+	      fontSize: 30,
+	      fontFamily: 'Calibri',
+	      fill: 'black'
+	  });
+	  fightLayer.add(score1Txt);
+	  fightLayer.add(score2Txt);
 	  fightLayer.draw();
 
 	  var fightY = 35;
@@ -171,13 +214,22 @@ function drawSequence(layer, monster, x, y, addToList) {
 	      var text = action.attacker+" attacks "+action.defender; 
 	      console.log(text);
 	      fightLayer.add(new Kinetic.Text({ 
-		  x: 100+20,
-		  y: 100+fightY,
+		  x: 200+20,
+		  y: 150+fightY,
 		  text: text,
 		  fontSize: 10,
 		  fontFamily: 'Calibri',
 		  fill: 'black'
 	      }));
+
+	      if (action.winner == fightList[0].name) {
+		  score1++;
+		  score1Txt.setText(""+score1);
+	      } else if (action.winner == fightList[1].name) {
+		  score2++;
+		  score2Txt.setText(""+score2);
+	      }
+	      
 	      fightLayer.draw();
 	      fightY += 15;
 	      setTimeout(function(){
@@ -187,7 +239,6 @@ function drawSequence(layer, monster, x, y, addToList) {
 	  
 	  setTimeout(function() {
 	      nextAction(function() {
-		  console.log("I'm here!");
 		  fightLayer.remove();
 		  stage.draw();
 
