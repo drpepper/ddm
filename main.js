@@ -7,6 +7,8 @@ var GENE_COLOR = {
 };
 var FADE_TIME = 50;
 
+var BOSS = makeMonster("AADDDDDDAADDDDDDDAAA".split(""));
+
 var images = {};
 
 var monsterList = [];
@@ -98,6 +100,8 @@ $(document).ready(function() {
     opacity: 0.1
   }));
 
+  layer.add(makeButton(50, stage.getHeight() - 70, "rgba(251, 100, 2, 1)", "BOSS!", fightBoss)); 
+
   var sequences = [];
 
   for(var i = 0; i < 10; i++) {
@@ -181,193 +185,8 @@ function drawSequence(layer, monster, x, y, addToList) {
     if(circles.getX() < 200) {
       console.log("fightList", fightList); 
 
-      if(fightList.length == 2) {
-        music.main.stop();
-        music.fight.setVolume(100).play();
-
-    	  var fightLayer = new Kinetic.Layer();
-    	  fightLayer.add(new Kinetic.Rect({
-	      x: 100,
-	      y: 100,
-	      width: stage.getWidth()-200,
-	      height: stage.getHeight()-100,
-	      fill: 'white',
-	      stroke: 'black',
-	      strokeWidth: 2,
-	      opacity: 1.0
-	  }));
-	  stage.add(fightLayer);
-
-          var result = fight(fightList[0], fightList[1]);
-
-	  fightLayer.add(drawSequence(fightLayer, JSON.parse(JSON.stringify(fightList[0])), 
-				      150, 175, false));
-	  fightLayer.add(drawSequence(fightLayer, JSON.parse(JSON.stringify(fightList[1])), 
-				      stage.getWidth()-150, 175, false));
-
-	  var score1 = 0;
-	  var score1Txt = new Kinetic.Text({ 
-	      x: 150,
-	      y: 525,
-	      text: "0",
-	      fontSize: 30,
-	      fontFamily: 'Helvetica',
-	      fill: 'black'
-	  });
-	  var score2 = 0;
-	  var score2Txt = new Kinetic.Text({ 
-	      x: stage.getWidth()-150,
-	      y: 525,
-	      text: "0",
-	      fontSize: 30,
-	      fontFamily: 'Helvetica',
-	      fill: 'black'
-	  });
-	  fightLayer.add(score1Txt);
-	  fightLayer.add(score2Txt);
-	  fightLayer.draw();
-
-	      var attackSprite = new Kinetic.Image({
-		  x: -250,
-		  y: 150+fightY,
-		  image: images["images/Attack.png"],
-		  width: 1, //10*action.attackV,
-		  height: 1, //10*action.attackV
-	      });
-	      fightLayer.add(attackSprite);
-	      
-	      var defenseSprite = new Kinetic.Image({
-		  x: -250,
-		  y: 150+fightY,
-		  image: images["images/Defense.png"],
-		  width: 1, //10*action.attackV,
-		  height: 1, //10*action.attackV
-	      });
-	      fightLayer.add(defenseSprite);
-
-
-
-	  var fightY = 0;
-	  function nextAction(cb) {
-	      action = result.shift();
-	      if (action === undefined) {
-		  console.log("fight finished");
-		  console.log(fightList[0].score);
-		  console.log(fightList[1].score);
-		  setTimeout(cb, 1000);
-		  return;
-	      }
-
-	      attackSprite.setWidth(20 + (20*action.attackV));
-	      attackSprite.setHeight(20 + (20*action.attackV));
-	      
-	      if (action.attacker == fightList[0].name) {
-		  attackSprite.setX(250 - (attackSprite.getWidth()/2));
-		  attackSprite.setY(175+fightY - (attackSprite.getWidth()/2));
-	      } else {
-		  attackSprite.setX(stage.getWidth()-(250 + (attackSprite.getWidth()/2)));
-		  attackSprite.setY(175+fightY - (attackSprite.getWidth()/2));
-	      }
-
-	      defenseSprite.setWidth(20 + (20*action.defenseV));
-	      defenseSprite.setHeight(20 + (20*action.defenseV));
-	      
-	      if (action.defender == fightList[0].name) {
-		  defenseSprite.setX(250 - (defenseSprite.getWidth()/2));
-		  defenseSprite.setY(175+fightY - (defenseSprite.getWidth()/2));
-	      } else {
-		  defenseSprite.setX(stage.getWidth()-(250 + (defenseSprite.getWidth()/2)));
-		  defenseSprite.setY(175+fightY - (defenseSprite.getWidth()/2));
-	      }
-
-	      /*
-	      var text = action.attacker+" attacks "+action.defender; 
-	      console.log(text);
-	      fightLayer.add(new Kinetic.Text({ 
-		  x: 200+20,
-		  y: 150+fightY,
-		  text: text,
-		  fontSize: 10,
-		  fontFamily: 'Helvetica',
-		  fill: 'black'
-	      }));
-	      */
-	      if (action.winner == fightList[0].name) {
-		  score1++;
-		  score1Txt.setText(""+score1);
-		  
-		  fightLayer.add(new Kinetic.Text({ 
-		      x: 350,
-		      y: 175+fightY,
-		      text: "+1",
-		      fontSize: 15,
-		      fontFamily: 'Helvetica',
-		      fill: 'black'
-		  }));
-		  
-		  
-	      } else if (action.winner == fightList[1].name) {
-		  score2++;
-		  score2Txt.setText(""+score2);
-		  
-		  fightLayer.add(new Kinetic.Text({ 
-		      x: stage.getWidth()-350,
-		      y: 175+fightY,
-		      text: "+1",
-		      fontSize: 15,
-		      fontFamily: 'Helvetica',
-		      fill: 'black'
-		  }));
-
-	      }
-	      
-	      fightLayer.draw();
-	      fightY += 25;
-	      console.log(fightY);
-	      setTimeout(function(){
-		  nextAction(cb);
-	      }, 250);
-	  }
-	  
-	  setTimeout(function() {
-	      nextAction(function() {
-		  fightLayer.remove();
-		  stage.draw();
-
-		  var toRemove = null; 
-      var won = null;
-		  if(fightList[0].score > fightList[1].score) {
-          won = fightList[0];
-		      toRemove = fightList[1];
-		  } else if(fightList[0].score < fightList[1].score) {
-          won = fightList[1];
-		      toRemove = fightList[0];
-		  }
-		  
-		  if(toRemove != null) {
-		      monsterList = _.without(monsterList, toRemove);
-		      
-		      new Kinetic.Tween({
-			  node: toRemove.circles, 
-			  duration: 0.25,
-			  opacity: 0,
-			  onFinish: function() { toRemove.circles.remove(); }
-		      }).play();
-		  }
-
-      if(won != null) {
-        won.fightsWon++;
-        won.circles.get("Text")[0].setText(won.fightsWon);
-        won.circles.get("Text")[0].setOpacity(1);
-      }
-		  
-      music.fight.fadeOut(FADE_TIME, function() { music.fight.stop(); });
-      music.main.fadeIn(FADE_TIME).play();
-
-		  snapMonsters();
-		 
-	      });
-	  }, 1000);
+      if(fightList.length == 2) { 
+        runFight(); 
       }
     } else if(circles.getX() > stage.getWidth() - 200) {
       if(mateList.length == 2) {
@@ -442,21 +261,235 @@ function loadSoundIntoList(list, url)
 }
 
 function makeButton(x, y, color, text, callback) {
-  var button = new Kinetic.Layer();
-
-  var rect = new Kinetic.Rect({
+  var button = new Kinetic.Group({
     x: x,
-    y: y,
+    y: y
+  });
+
+  button.add(new Kinetic.Rect({
     width: 100,
     height: 50,
     cornerRadius: 5,
-    fill: 'green',
+    fill: color,
     stroke: 'black',
     strokeWidth: 4
-  });
-  button.add(rect);
+  }));
 
-  button.on('click', callback);
+  button.add(new Kinetic.Text({ 
+    x: 15,
+    y: 20,
+    text: text,
+    fontSize: 20,
+    fontFamily: 'Helvetica',
+    fill: 'black'
+  }));
+
+  button.on('mouseover', function() {
+      document.body.style.cursor = 'pointer';
+    });
+  button.on('mouseout', function() {
+    document.body.style.cursor = 'default';
+  });
+
+  button.on('click', fightBoss);
   return button;
 }
 
+function fightBoss() {
+  console.log("BOSS");
+
+  fightList.push(BOSS);
+  runFight();
+
+}
+
+function runFight() {
+      music.main.stop();
+      music.fight.setVolume(100).play();
+
+      var fightLayer = new Kinetic.Layer();
+      fightLayer.add(new Kinetic.Rect({
+      x: 100,
+      y: 100,
+      width: stage.getWidth()-200,
+      height: stage.getHeight()-100,
+      fill: 'white',
+      stroke: 'black',
+      strokeWidth: 2,
+      opacity: 1.0
+  }));
+  stage.add(fightLayer);
+
+        var result = fight(fightList[0], fightList[1]);
+
+  fightLayer.add(drawSequence(fightLayer, JSON.parse(JSON.stringify(fightList[0])), 
+            150, 175, false));
+  fightLayer.add(drawSequence(fightLayer, JSON.parse(JSON.stringify(fightList[1])), 
+            stage.getWidth()-150, 175, false));
+
+  var score1 = 0;
+  var score1Txt = new Kinetic.Text({ 
+      x: 150,
+      y: 525,
+      text: "0",
+      fontSize: 30,
+      fontFamily: 'Helvetica',
+      fill: 'black'
+  });
+  var score2 = 0;
+  var score2Txt = new Kinetic.Text({ 
+      x: stage.getWidth()-150,
+      y: 525,
+      text: "0",
+      fontSize: 30,
+      fontFamily: 'Helvetica',
+      fill: 'black'
+  });
+  fightLayer.add(score1Txt);
+  fightLayer.add(score2Txt);
+  fightLayer.draw();
+
+      var attackSprite = new Kinetic.Image({
+    x: -250,
+    y: 150+fightY,
+    image: images["images/Attack.png"],
+    width: 1, //10*action.attackV,
+    height: 1, //10*action.attackV
+      });
+      fightLayer.add(attackSprite);
+      
+      var defenseSprite = new Kinetic.Image({
+    x: -250,
+    y: 150+fightY,
+    image: images["images/Defense.png"],
+    width: 1, //10*action.attackV,
+    height: 1, //10*action.attackV
+      });
+      fightLayer.add(defenseSprite);
+
+
+
+  var fightY = 0;
+  function nextAction(cb) {
+      action = result.shift();
+      if (action === undefined) {
+    console.log("fight finished");
+    console.log(fightList[0].score);
+    console.log(fightList[1].score);
+    setTimeout(cb, 1000);
+    return;
+      }
+
+      attackSprite.setWidth(20 + (20*action.attackV));
+      attackSprite.setHeight(20 + (20*action.attackV));
+      
+      if (action.attacker == fightList[0].name) {
+    attackSprite.setX(250 - (attackSprite.getWidth()/2));
+    attackSprite.setY(175+fightY - (attackSprite.getWidth()/2));
+      } else {
+    attackSprite.setX(stage.getWidth()-(250 + (attackSprite.getWidth()/2)));
+    attackSprite.setY(175+fightY - (attackSprite.getWidth()/2));
+      }
+
+      defenseSprite.setWidth(20 + (20*action.defenseV));
+      defenseSprite.setHeight(20 + (20*action.defenseV));
+      
+      if (action.defender == fightList[0].name) {
+    defenseSprite.setX(250 - (defenseSprite.getWidth()/2));
+    defenseSprite.setY(175+fightY - (defenseSprite.getWidth()/2));
+      } else {
+    defenseSprite.setX(stage.getWidth()-(250 + (defenseSprite.getWidth()/2)));
+    defenseSprite.setY(175+fightY - (defenseSprite.getWidth()/2));
+      }
+
+      /*
+      var text = action.attacker+" attacks "+action.defender; 
+      console.log(text);
+      fightLayer.add(new Kinetic.Text({ 
+    x: 200+20,
+    y: 150+fightY,
+    text: text,
+    fontSize: 10,
+    fontFamily: 'Helvetica',
+    fill: 'black'
+      }));
+      */
+      if (action.winner == fightList[0].name) {
+    score1++;
+    score1Txt.setText(""+score1);
+    
+    fightLayer.add(new Kinetic.Text({ 
+        x: 350,
+        y: 175+fightY,
+        text: "+1",
+        fontSize: 15,
+        fontFamily: 'Helvetica',
+        fill: 'black'
+    }));
+    
+    
+      } else if (action.winner == fightList[1].name) {
+    score2++;
+    score2Txt.setText(""+score2);
+    
+    fightLayer.add(new Kinetic.Text({ 
+        x: stage.getWidth()-350,
+        y: 175+fightY,
+        text: "+1",
+        fontSize: 15,
+        fontFamily: 'Helvetica',
+        fill: 'black'
+    }));
+
+      }
+      
+      fightLayer.draw();
+      fightY += 25;
+      console.log(fightY);
+      setTimeout(function(){
+    nextAction(cb);
+      }, 250);
+  }
+  
+  setTimeout(function() {
+      nextAction(function() {
+    fightLayer.remove();
+    stage.draw();
+
+    var toRemove = null; 
+    var won = null;
+    if(fightList[0].score > fightList[1].score) {
+        won = fightList[0];
+        toRemove = fightList[1];
+    } else if(fightList[0].score < fightList[1].score) {
+        won = fightList[1];
+        toRemove = fightList[0];
+    }
+    
+    if(toRemove != null) {
+        monsterList = _.without(monsterList, toRemove);
+        
+        new Kinetic.Tween({
+      node: toRemove.circles, 
+      duration: 0.25,
+      opacity: 0,
+      onFinish: function() { toRemove.circles.remove(); }
+        }).play();
+    }
+
+    if(won != null) {
+      won.fightsWon++;
+      if(won.circles) {
+        won.circles.get("Text")[0].setText(won.fightsWon);
+        won.circles.get("Text")[0].setOpacity(1);
+      }
+    }
+    
+    music.fight.fadeOut(FADE_TIME, function() { music.fight.stop(); });
+    music.main.fadeIn(FADE_TIME).play();
+
+    snapMonsters();
+   
+      });
+  }, 1000);
+}
