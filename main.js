@@ -187,8 +187,12 @@ function snapMonsters() {
 function snapList(list, xMin, xMax) {
   var sorted = _.sortBy(list, function(monster) { return monster.circles.getX(); });
   for(var i = 0; i < sorted.length; i++) {
-    list[i].circles.setY(100);
-    list[i].circles.setX(interpolate(xMin, xMax, (i + 1) / (sorted.length + 1)));
+    new Kinetic.Tween({
+      node: list[i].circles, 
+      duration: 0.25,
+      x: interpolate(xMin, xMax, (i + 1) / (sorted.length + 1)),
+      y: 100,
+    }).play();
   }
   layer.draw();
 }
