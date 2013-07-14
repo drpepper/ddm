@@ -14,6 +14,10 @@ var mateList = [];
 
 var stage = {};
 var layer;
+var sounds = {
+  mate: [],
+  fight: []
+}; 
 
 function loadImage(lst, cb) {
     var src = lst.shift();
@@ -31,12 +35,12 @@ function loadImage(lst, cb) {
 }
 
 $(document).ready(function() {
-    var spriteList = [ "images/Attack.png", "images/Defense.png", "images/Reproduction.png"];
-    loadImage(spriteList, function() {
-	console.log("all images loaded");
-    });
-    
+  loadSounds();
 
+  var spriteList = [ "images/Attack.png", "images/Defense.png", "images/Reproduction.png"];
+  loadImage(spriteList, function() {
+    console.log("all images loaded");
+  });
 
   stage = new Kinetic.Stage({
     container: 'game',
@@ -160,8 +164,8 @@ function drawSequence(layer, monster, x, y, addToList) {
       console.log("fightList", fightList); 
 
       if(fightList.length == 2) {
-	  var fightLayer = new Kinetic.Layer();
-	  fightLayer.add(new Kinetic.Rect({
+    	  var fightLayer = new Kinetic.Layer();
+    	  fightLayer.add(new Kinetic.Rect({
 	      x: 100,
 	      y: 100,
 	      width: stage.getWidth()-200,
@@ -312,6 +316,7 @@ function drawSequence(layer, monster, x, y, addToList) {
     } else if(circles.getX() > stage.getWidth() - 200) {
       if(mateList.length == 2) {
         var crosses = cross(mateList[0], mateList[1]);
+        playRandomSoundInList(sounds.mate);
 
         console.log(crosses[0].name);
         console.log(crosses[1].name);
@@ -359,3 +364,21 @@ function snapList(list, xMin, xMax) {
   }
   layer.draw();
 }
+
+function playRandomSoundInList(list) {
+  list[Math.floor(Math.random() * list.length)].play();
+}
+
+function loadSounds() {
+  loadSoundIntoList(sounds.mate, "sounds/mate/16440.ogg");
+  loadSoundIntoList(sounds.mate, "sounds/mate/16442.ogg");
+  loadSoundIntoList(sounds.mate, "sounds/mate/16443.ogg");
+  loadSoundIntoList(sounds.fight, "sounds/fight/13883.ogg");
+  loadSoundIntoList(sounds.fight, "sounds/fight/21305.ogg");
+}
+
+function loadSoundIntoList(list, url)
+{
+  list.push(new buzz.sound(url, { preload: true }));  
+}
+
