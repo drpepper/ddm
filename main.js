@@ -79,7 +79,7 @@ $(document).ready(function() {
     fill: 'black',
     stroke: 'black',
     strokeWidth: 2,
-    opacity: 0.2
+    opacity: 0.1
   }));
 
   layer.add(new Kinetic.Rect({
@@ -90,7 +90,7 @@ $(document).ready(function() {
     fill: 'black',
     stroke: 'black',
     strokeWidth: 2,
-    opacity: 0.2
+    opacity: 0.1
   }));
 
   var sequences = [];
@@ -197,7 +197,7 @@ function drawSequence(layer, monster, x, y, addToList) {
 	  var score1 = 0;
 	  var score1Txt = new Kinetic.Text({ 
 	      x: 150,
-	      y: 125,
+	      y: 525,
 	      text: "0",
 	      fontSize: 30,
 	      fontFamily: 'Calibri',
@@ -206,7 +206,7 @@ function drawSequence(layer, monster, x, y, addToList) {
 	  var score2 = 0;
 	  var score2Txt = new Kinetic.Text({ 
 	      x: stage.getWidth()-150,
-	      y: 125,
+	      y: 525,
 	      text: "0",
 	      fontSize: 30,
 	      fontFamily: 'Calibri',
