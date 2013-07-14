@@ -12,8 +12,14 @@ var mateList = [];
 
 var stage = {};
 var layer;
+var sounds = {
+  mate: [],
+  fight: []
+}; 
 
 $(document).ready(function() {
+  loadSounds();
+
   stage = new Kinetic.Stage({
     container: 'game',
     width: 900,
@@ -127,8 +133,8 @@ function drawSequence(layer, monster, x, y) {
       console.log("fightList", fightList); 
 
       if(fightList.length == 2) {
-	  var fightLayer = new Kinetic.Layer();
-	  fightLayer.add(new Kinetic.Rect({
+    	  var fightLayer = new Kinetic.Layer();
+    	  fightLayer.add(new Kinetic.Rect({
 	      x: 100,
 	      y: 100,
 	      width: stage.getWidth()-200,
@@ -209,6 +215,7 @@ function drawSequence(layer, monster, x, y) {
     } else if(circles.getX() > stage.getWidth() - 200) {
       if(mateList.length == 2) {
         var crosses = cross(mateList[0], mateList[1]);
+        playRandomSoundInList(sounds.mate);
 
         console.log(crosses[0].name);
         console.log(crosses[1].name);
@@ -256,3 +263,17 @@ function snapList(list, xMin, xMax) {
   }
   layer.draw();
 }
+
+function playRandomSoundInList(list) {
+  list[Math.floor(Math.random() * list.length)].play();
+}
+
+function loadSounds() {
+  loadSoundIntoList(sounds.mate, "sounds/mate/16440.mp3");
+}
+
+function loadSoundIntoList(list, url)
+{
+  list.push(new buzz.sound(url, { preload: true }));  
+}
+
